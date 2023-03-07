@@ -11,6 +11,19 @@ struct key_press {
 struct key_release {
   int key;
 };
+
+struct mouse_move {
+  double x;
+  double y;
+};
+
+struct mouse_button_press {
+  int button;
+};
+
+struct mouse_button_release {
+  int button;
+};
 }
 
 namespace gql {
@@ -60,6 +73,61 @@ public:
   [[nodiscard]] bool was_pressed(int key) const noexcept {
     return
       states[key] == key_state::PRESSED;
+  }
+};
+
+struct mouse_event_listener {
+private:
+  friend window;
+
+  double x = std::numeric_limits<double>::infinity();
+  double y = std::numeric_limits<double>::infinity();
+
+  enum class button_state {
+    UNKNOWN,
+    PRESSED,
+    HELD,
+    UP,
+  };
+
+  std::array<button_state, 8> states {};
+
+
+  void consume(gql::event::mouse_move event) {
+    x = event.x;
+    y = event.y;
+  }
+
+  void consume(gql::event::mouse_button_press event) {
+    states[event.button] = button_state::PRESSED;
+  }
+
+  void consume(gql::event::mouse_button_release event) {
+    states[event.button] = button_state::UP;
+  }
+public:
+  void tick() {
+    for (auto &state : states) {
+      if (state == button_state::PRESSED) {
+        state = button_state::HELD;
+      }
+    }
+  }
+
+
+  [[nodiscard]] std::tuple<double, double> pos() const noexcept {
+    return {x, y};
+  }
+
+  [[nodiscard]] bool is_down(int key) const noexcept {
+    return
+      states[key] == button_state::PRESSED ||
+      states[key] == button_state::HELD;
+  }
+
+  [[nodiscard]] bool was_pressed(int key) const noexcept {
+    return
+      states[key] == button_state::PRESSED;
   }
 };
 }

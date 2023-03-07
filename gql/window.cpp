@@ -25,6 +25,27 @@ void gql::window::internal_key_listener(GLFWwindow *window, int key, int scancod
   }
 }
 
+void gql::window::internal_mouse_pos_listener(GLFWwindow *window, double x, double y) {
+  auto self = reinterpret_cast<gql::window*>(glfwGetWindowUserPointer(window));
+  self->emit_mouse_move(event::mouse_move {
+    .x = x,
+    .y = y
+  });
+}
+
+void gql::window::internal_mouse_button_listener(GLFWwindow *window, int button, int action, int mods) {
+  auto self = reinterpret_cast<gql::window*>(glfwGetWindowUserPointer(window));
+  if (action == GLFW_PRESS) {
+    self->emit_mouse_button_press(event::mouse_button_press {
+      .button = button
+    });
+  } else if (action == GLFW_RELEASE) {
+    self->emit_mouse_button_release(event::mouse_button_release {
+      .button = button
+    });
+  }
+}
+
 gql::window::window(std::uint16_t width, std::uint16_t height, std::string_view title) : width(width), height(height) {
   handle = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 
@@ -33,6 +54,8 @@ gql::window::window(std::uint16_t width, std::uint16_t height, std::string_view 
 
   glfwSetWindowUserPointer(handle, this);
   glfwSetKeyCallback(handle, window::internal_key_listener);
+  glfwSetCursorPosCallback(handle, window::internal_mouse_pos_listener);
+  glfwSetMouseButtonCallback(handle, window::internal_mouse_button_listener);
 }
 
 bool gql::window::should_close() const {

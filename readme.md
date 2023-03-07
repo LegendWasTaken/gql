@@ -87,12 +87,12 @@ public:
     std::cout << "Mouse move to: " << event.x << ", " << event.y << std::endl;
   }
   
-  void consume(gql::event::mouse_key_press event) {
-    std::cout << "Mouse Key: " << event.key << " was pressed" << std::endl;
+  void consume(gql::event::mouse_button_press event) {
+    std::cout << "Mouse Key: " << event.button << " was pressed" << std::endl;
   }
   
-  void consume(gql::event::mouse_key_release event) {
-    std::cout << "Mouse Key: " << event.key << " was released" << std::endl;
+  void consume(gql::event::mouse_button_release event) {
+    std::cout << "Mouse Key: " << event.button << " was released" << std::endl;
   }
 };
 

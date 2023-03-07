@@ -15,3 +15,6 @@ target_link_libraries(example_basic_window PRIVATE gql)
 add_executable(example_keyboard_input example/keyboard_input.cpp)
 target_link_libraries(example_keyboard_input PRIVATE gql)
 
+add_executable(example_mouse_input example/mouse_input.cpp)
+target_link_libraries(example_mouse_input PRIVATE gql)
+
