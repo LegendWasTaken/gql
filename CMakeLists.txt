@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(external)
 
 add_library(gql gql/window.cpp)
-target_include_directories(gql PUBLIC ${CMAKE_SOURCE_DIR})
+target_include_directories(gql PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gql PUBLIC ImGui glad fmt)
 
 add_executable(example_basic_window example/basic_window.cpp)
