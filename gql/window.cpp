@@ -2,6 +2,10 @@
 
 #include <glad/glad.h>
 
+#include <imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+
 gql::window::init::init() {
   glfwInit();
 
@@ -56,6 +60,13 @@ gql::window::window(std::uint16_t width, std::uint16_t height, std::string_view 
   glfwSetKeyCallback(handle, window::internal_key_listener);
   glfwSetCursorPosCallback(handle, window::internal_mouse_pos_listener);
   glfwSetMouseButtonCallback(handle, window::internal_mouse_button_listener);
+
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+
+  ImGui_ImplGlfw_InitForOpenGL((GLFWwindow *)handle, true);
+  ImGui_ImplOpenGL3_Init("#version 450");
+  ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 }
 
 bool gql::window::should_close() const {
@@ -70,8 +81,15 @@ gql::window::tick_wrapper::tick_wrapper(GLFWwindow *handle) : handle(handle) {
   glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   glfwPollEvents();
+
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
 }
 
 gql::window::tick_wrapper::~tick_wrapper() {
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
   glfwSwapBuffers(handle);
 }
