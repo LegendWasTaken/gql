@@ -21,3 +21,6 @@ target_link_libraries(example_mouse_input PRIVATE gql)
 add_executable(example_imgui_non_docking example/imgui_non_docking.cpp)
 target_link_libraries(example_imgui_non_docking PRIVATE gql)
 
+add_executable(example_hello_triangle example/hello_triangle.cpp)
+target_link_libraries(example_hello_triangle PRIVATE gql)
+
